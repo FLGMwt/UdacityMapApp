@@ -1,0 +1,25 @@
+{
+  "name": "mapapp",
+  "version": "0.0.0",
+  "authors": [
+    "Ryan Stelly <ryan.stelly@live.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "knockout": "~3.3.0"
+  }
+}
