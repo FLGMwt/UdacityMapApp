@@ -3,11 +3,22 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Map App</title>
+	<title>Sights of Chicago</title>
 	<script src='bower_components/knockout/dist/knockout.js'></script>
-	<script src="dist/app.js"></script>
+	<script src="dist/scripts/app.js"></script>
+	<link rel="stylesheet" href="dist/styles/style.css">
 </head>
 <body>
-	Hello whirld
+	<header><h1>Sights of Chicago</h1></header>
+	<main>
+		<section id="place-list" class="place-list">
+			<div class="place-item" data-bind="foreach: places">
+				<div data-bind="text: name"></div>
+			</div>
+		</section>
+		<section id="map" class="map">
+		</section>
+	</main>
+	<footer></footer>
 </body>
 </html>
