@@ -25,3 +25,7 @@ body, html {
 	min-width: 200px;
 	border: 1px solid black;
 }
+
+.footer {
+	min-height: 20px;
+}
