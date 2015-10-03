@@ -11,7 +11,7 @@ var paths = {
 
 gulp.task('scripts', ['clean:scripts'], function() {
 	gulp.src(paths.scripts)
-		.pipe(uglify())
+		// .pipe(uglify())
 		.pipe(gulp.dest(DEST + '/scripts'));
 });
 
