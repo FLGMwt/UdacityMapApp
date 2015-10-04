@@ -1,8 +1,3 @@
-window.onresize = function() {
-	var mainContent = document.getElementById("main-content");
-
-};
-
 var map;
 var infoWindow;
 function closeInfo() {
@@ -66,20 +61,25 @@ function initMap() {
 	initializeApp();
 }
 
-var oauth = OAuth({
-    consumer: {
-        public: 'CONSUMERPUBLIC',
-        secret: 'CONSUMERSECRET'
-    },
-    signature_method: 'HMAC-SHA1'
-});
-
-var token = {
-    public: 'TOKENPUBLIC',
-    secret: 'TOKENSECRET'
-};
-
 function getInfoContent(place) {
+	$.get("http://api.nytimes.com/svc/search/v2/articlesearch.json",
+		{ "api-key": "APIKEY", "q": place.name })
+		.done(function(data) {
+			// Build up a bit of html to show up inside the info window
+			place.infoWindowContent = '<h3>Latest Stories About ' + place.name + '</3><ul>';
+			var docs = data.response.docs;
+			// Limit articles to 4 to prevent crowding
+			for (var i = 0; i < docs.length && i < 4; i++) {
+				var doc = docs[i];
+				// The print headlin is usually more concise, use that if available
+				var title = doc.headline.print_headline || doc.headline.main;
+				place.infoWindowContent += '<li><a href="' + doc.web_url + '">' + title + '</a></p>';
+			}
+			place.infoWindowContent += '</ul>';
+		})
+		.fail(function(data) {
+			place.infoWindowContent = '<p>Oh no! Looks like we couldn\'t reach the New York Times to find news. Try <a href="http://www.nytimes.com/">their website.</a></p>';
+		});
 
 	return '<h1>hello whirld, at ' + place.name + '</h1>';
 }
@@ -91,13 +91,16 @@ function initializeApp() {
     		animation: google.maps.Animation.DROP,
 			map: map
 		});
+		// Info window content is set asynchronously, but here's some default text
+		place.infoWindowContent = "Loading...";
+		getInfoContent(place);
 
-		var infoWindowContent = getInfoContent(place);
 		function showInfoWindow() {
 			closeInfo();
 			infoWindow = new google.maps.InfoWindow({
-				content: infoWindowContent
+				content: place.infoWindowContent
 			});
+			// When the info window gets enabled, do an animation that lasts 1440 ms
 			marker.setAnimation(google.maps.Animation.BOUNCE);
 			window.setTimeout(function() {
 				marker.setAnimation(null);
@@ -105,9 +108,9 @@ function initializeApp() {
 			infoWindow.open(map, marker);
 		}
 		marker.addListener('click', showInfoWindow);
-
-		place.marker = marker;
 		place.showMarker = showInfoWindow;
+
+		place.marker = marker;		
 	}
 
 	function getInitialPlaces(places) {
@@ -117,7 +120,7 @@ function initializeApp() {
 
     function MapAppViewModel(initialPlaces) {
         var self = this;
-
+        // Add some map-related properties to the static data now that we know we have the maps API
         self.places = ko.observableArray(getInitialPlaces(initialPlaces));
 
         self.searchTerm = ko.observable('');
@@ -132,6 +135,7 @@ function initializeApp() {
 	    	});
 	    });
 
+	    // Whenever the value of filteredPlaces changes, we need to update the map to show the right markers
 	    self.filteredPlaces.subscribe(function(newValue) {
 	    	self.places().forEach(function(place, i) {
 	    		var matchingFilteredPlace = ko.utils.arrayFirst(self.filteredPlaces(), function(filteredPlace) {
