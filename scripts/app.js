@@ -1,5 +1,6 @@
 var map;
 var markers = [];
+var infoWindows = [];
 var initialPlaces = [
 	{ name: "Cloud Gate", lat: 41.882663, lng: -87.623306 },
 	{ name: "Willis Tower", lat: 41.878888, lng: -87.635910 },
@@ -17,14 +18,37 @@ function initMap() {
 		center: {lat: 41.866205, lng: -87.606826 },
 		zoom: 12
 	});
-	for (var i = 0; i < initialPlaces.length; i++) {
+
+	map.addListener('click', function() {
+		closeAllInfoWindows();
+	});
+
+	initialPlaces.forEach(function(place) {
 		var marker = new google.maps.Marker({
-			position: initialPlaces[i],			
+			position: place,			
     		animation: google.maps.Animation.DROP,
 			map: map
 		});
+
+		var infoWindow = new google.maps.InfoWindow({
+			content: '<h1>hello whirld, at ' + place.name + '</h1>'
+		});
+
+		marker.addListener('click', function() {
+			closeAllInfoWindows();
+			infoWindow.open(map, marker);
+		});
+
+		infoWindows.push(infoWindow);
 		markers.push(marker);
-	}
+	});
+}
+
+function closeAllInfoWindows() {
+	debugger;
+	infoWindows.forEach(function(infoWindow) {
+		infoWindow.close();
+	});
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -46,10 +70,9 @@ document.addEventListener("DOMContentLoaded", function() {
 	    });
 
 	    self.filteredPlaces.subscribe(function(newValue) {
-	    	for (var i = 0; i < initialPlaces.length; i++) {
-	    		var thisInitialPlace = initialPlaces[i];
+	    	initialPlaces.forEach(function(initialPlace, i) {
 	    		var matchingFilteredPlace = ko.utils.arrayFirst(self.filteredPlaces(), function(place) {
-		            return place.name === thisInitialPlace.name;
+		            return place.name === initialPlace.name;
 	    	    });
 	    	    if (matchingFilteredPlace === null) {
 	    	    	markers[i].setMap(null);
@@ -57,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	    	    	markers[i].setMap(map);
 	    	    	markers[i].setAnimation(google.maps.Animation.DROP);
 	    	    }
-	    	}
+	    	});
 	    })
     };
 

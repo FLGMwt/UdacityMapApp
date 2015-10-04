@@ -3,7 +3,6 @@ body, html {
 	overflow: hidden;
 }
 
-
 .main-content {
     display: flex;
     height: 80%;
@@ -28,4 +27,4 @@ body, html {
 
 .footer {
 	min-height: 20px;
-}
+} 
