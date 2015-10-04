@@ -1,11 +1,10 @@
-body, html {
-	height: 100%;
-	overflow: hidden;
-}
-
 .main-content {
     display: flex;
-    height: 80%;
+    position: absolute;
+    top: 38px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
 }
 
 .search-bar {
@@ -24,7 +23,3 @@ body, html {
 	min-width: 200px;
 	border: 1px solid black;
 }
-
-.footer {
-	min-height: 20px;
-} 

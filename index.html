@@ -7,18 +7,17 @@
 	<script src='bower_components/knockout/dist/knockout.js'></script>
 	<script src="dist/scripts/app.js"></script>
 	<script async defer
-      src="https://maps.googleapis.com/maps/api/js?key=KEYHERE&callback=initMap">
+      src="https://maps.googleapis.com/maps/api/js?key=APIKEY&callback=initMap">
     </script>
 	<link rel="stylesheet" href="dist/styles/style.css">
 </head>
 <body>
 	<header>
-		<h1>Sights of Chicago</h1>
 		<section class="search-bar">
 			<input data-bind="value: searchTerm, valueUpdate: 'afterkeydown'" />
 		</section>
 	</header>
-	<main class="main-content">
+	<main id="main-content" class="main-content">
 		<section id="place-list" class="place-list">
 			<div class="place-item" data-bind="foreach: filteredPlaces">
 				<div data-bind="click: showMarker"><span data-bind="text: name"></span></div>
@@ -28,6 +27,5 @@
 
 		</section>
 	</main>
-	<footer class="footer">Test Footer</footer>
 </body>
 </html>

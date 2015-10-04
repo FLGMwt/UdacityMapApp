@@ -1,3 +1,8 @@
+window.onresize = function() {
+	var mainContent = document.getElementById("main-content");
+
+};
+
 var map;
 var infoWindow;
 function closeInfo() {
@@ -75,6 +80,10 @@ function initializeApp() {
 			infoWindow = new google.maps.InfoWindow({
 				content: infoWindowContent
 			});
+			marker.setAnimation(google.maps.Animation.BOUNCE);
+			window.setTimeout(function() {
+				marker.setAnimation(null);
+			}, 1440);
 			infoWindow.open(map, marker);
 		}
 		marker.addListener('click', showInfoWindow);
