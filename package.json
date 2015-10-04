@@ -12,9 +12,10 @@
     "bower": "^1.5.3",
     "del": "^2.0.2",
     "gulp": "^3.9.0",
-    "gulp-uglify": "^1.4.1"
+    "gulp-uglify": "^1.4.1",
+    "gulp-uglifycss": "^1.0.4"
   },
   "dependencies": {
-    "gulp-uglifycss": "^1.0.4"
+    "superagent": "^1.4.0"
   }
 }

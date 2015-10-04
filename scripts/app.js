@@ -1,17 +1,52 @@
 var map;
-var markers = [];
-var infoWindows = [];
+var infoWindow;
+function closeInfo() {
+	if (infoWindow) {
+		infoWindow.close();
+	};
+}
 var initialPlaces = [
-	{ name: "Cloud Gate", lat: 41.882663, lng: -87.623306 },
-	{ name: "Willis Tower", lat: 41.878888, lng: -87.635910 },
-	{ name: "Civic Opera House", lat: 41.882571, lng: -87.637391 },
-	{ name: "Buckingham Fountain", lat: 41.875776, lng: -87.619003 },
-	{ name: "Museum of Contemporary Art Chicago", lat: 41.897179, lng: -87.621447 },
-	{ name: "Navy Pier", lat: 41.891640, lng: -87.608705 },
-	{ name: "The Art Institute of Chicago", lat: 41.879585, lng: -87.622898 },
-	{ name: "Shedd Aquarium", lat: 41.867571, lng: -87.614061 },
-	{ name: "Adler Planetarium", lat: 41.866322, lng: -87.606772 },
+	{
+		name: "Cloud Gate",
+		position: { lat: 41.882663, lng: -87.623306 }
+	},
+	{
+		name: "Willis Tower",
+		position: {lat: 41.878888, lng: -87.635910 }
+	},
+	{
+		name: "Civic Opera House",
+		position: { lat: 41.882571, lng: -87.637391 }
+	},
+	{
+		name: "Buckingham Fountain",
+		position: { lat: 41.875776, lng: -87.619003 }
+	},
+	{
+		name: "Museum of Contemporary Art Chicago",
+		position: { lat: 41.897179, lng: -87.621447 }
+	},
+	{
+		name: "Navy Pier",
+		position: { lat: 41.891640, lng: -87.608705 }
+	},
+	{
+		name: "The Art Institute of Chicago",
+		position: { lat: 41.879585, lng: -87.622898 }
+	},
+	{
+		name: "Shedd Aquarium",
+		position: { lat: 41.867571, lng: -87.614061 }
+	},
+	{
+		name: "Adler Planetarium",
+		position: { lat: 41.866322, lng: -87.606772 }
+	}
 ];
+
+var timeout = window.setTimeout(function(){
+	console.log('error things')
+}, 1500);
 
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
@@ -19,49 +54,50 @@ function initMap() {
 		zoom: 12
 	});
 
-	map.addListener('click', function() {
-		closeAllInfoWindows();
-	});
+	map.addListener('click', closeInfo);
 
-	initialPlaces.forEach(function(place) {
+	window.clearTimeout(timeout);
+
+	initializeApp();
+}
+
+function initializeApp() {
+	function initializePlace(place) {
 		var marker = new google.maps.Marker({
-			position: place,			
+			position: place.position,			
     		animation: google.maps.Animation.DROP,
 			map: map
 		});
 
-		var infoWindow = new google.maps.InfoWindow({
-			content: '<h1>hello whirld, at ' + place.name + '</h1>'
-		});
-
-		marker.addListener('click', function() {
-			closeAllInfoWindows();
+		var infoWindowContent = '<h1>hello whirld, at ' + place.name + '</h1>';
+		function showInfoWindow() {
+			closeInfo();
+			infoWindow = new google.maps.InfoWindow({
+				content: infoWindowContent
+			});
 			infoWindow.open(map, marker);
-		});
+		}
+		marker.addListener('click', showInfoWindow);
 
-		infoWindows.push(infoWindow);
-		markers.push(marker);
-	});
-}
+		place.marker = marker;
+		place.showMarker = showInfoWindow;
+	}
 
-function closeAllInfoWindows() {
-	debugger;
-	infoWindows.forEach(function(infoWindow) {
-		infoWindow.close();
-	});
-}
+	function getInitialPlaces(places) {
+		places.forEach(initializePlace);
+		return places;
+	}
 
-document.addEventListener("DOMContentLoaded", function() {
     function MapAppViewModel(initialPlaces) {
         var self = this;
 
-        self.places = ko.observableArray(initialPlaces);
+        self.places = ko.observableArray(getInitialPlaces(initialPlaces));
 
         self.searchTerm = ko.observable('');
 
 	    self.filteredPlaces = ko.computed(function() {
 	    	if (!self.searchTerm()) { 
-	    		return self.places(); 
+	    		return self.places();
 	    	}
 	    	var filter = self.searchTerm().toLowerCase();
 	    	return ko.utils.arrayFilter(self.places(), function(place) {
@@ -70,19 +106,20 @@ document.addEventListener("DOMContentLoaded", function() {
 	    });
 
 	    self.filteredPlaces.subscribe(function(newValue) {
-	    	initialPlaces.forEach(function(initialPlace, i) {
-	    		var matchingFilteredPlace = ko.utils.arrayFirst(self.filteredPlaces(), function(place) {
-		            return place.name === initialPlace.name;
+	    	self.places().forEach(function(place, i) {
+	    		var matchingFilteredPlace = ko.utils.arrayFirst(self.filteredPlaces(), function(filteredPlace) {
+		            return filteredPlace.name === place.name;
 	    	    });
 	    	    if (matchingFilteredPlace === null) {
-	    	    	markers[i].setMap(null);
-	    	    } else if (markers[i].map === null) {
-	    	    	markers[i].setMap(map);
-	    	    	markers[i].setAnimation(google.maps.Animation.DROP);
+	    	    	closeInfo();
+	    	    	place.marker.setMap(null);	    	    	
+	    	    } else if (place.marker.map === null) {
+	    	    	place.marker.setMap(map);
+	    	    	place.marker.setAnimation(google.maps.Animation.DROP);
 	    	    }
 	    	});
 	    })
     };
 
-    ko.applyBindings(new MapAppViewModel(initialPlaces));	
-});
+    ko.applyBindings(new MapAppViewModel(initialPlaces));
+}

@@ -7,7 +7,7 @@
 	<script src='bower_components/knockout/dist/knockout.js'></script>
 	<script src="dist/scripts/app.js"></script>
 	<script async defer
-      src="https://maps.googleapis.com/maps/api/js?key=APIHERE&callback=initMap">
+      src="https://maps.googleapis.com/maps/api/js?key=KEYHERE&callback=initMap">
     </script>
 	<link rel="stylesheet" href="dist/styles/style.css">
 </head>
@@ -16,16 +16,16 @@
 		<h1>Sights of Chicago</h1>
 		<section class="search-bar">
 			<input data-bind="value: searchTerm, valueUpdate: 'afterkeydown'" />
-			<!--<input data-bind="value: searchTerm" />-->
 		</section>
 	</header>
 	<main class="main-content">
 		<section id="place-list" class="place-list">
 			<div class="place-item" data-bind="foreach: filteredPlaces">
-				<div data-bind="text: name"></div>
+				<div data-bind="click: showMarker"><span data-bind="text: name"></span></div>
 			</div>
 		</section>
 		<section id="map" class="map">
+
 		</section>
 	</main>
 	<footer class="footer">Test Footer</footer>
