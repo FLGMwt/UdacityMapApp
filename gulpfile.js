@@ -5,7 +5,12 @@ var del = require('del');
 
 var DEST = 'dist';
 var paths = {
-	scripts: 'scripts/*.js',
+	scripts: [
+		'scripts/*.js',
+		'bower_components/knockout/dist/knockout.js',
+		'bower_components/jquery/dist/jquery.js',
+		'node_modules/oauth-1.0a/oauth-1.0a.js'
+	],
 	styles: 'styles/*.css'
 };
 

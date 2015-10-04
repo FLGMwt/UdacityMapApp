@@ -4,11 +4,14 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Sights of Chicago</title>
-	<script src='bower_components/knockout/dist/knockout.js'></script>
+	<script src='dist/scripts/knockout.js'></script>
+	<script src='dist/scripts/jquery.js'></script>
+	<script src='dist/scripts/oauth-1.0a.js'></script>
 	<script src="dist/scripts/app.js"></script>
 	<script async defer
-      src="https://maps.googleapis.com/maps/api/js?key=APIKEY&callback=initMap">
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBpiH-ikGBFvdbpGQ3BkErSYFI8Ve5OkMc&callback=initMap">
     </script>
+    
 	<link rel="stylesheet" href="dist/styles/style.css">
 </head>
 <body>
@@ -23,9 +26,7 @@
 				<div data-bind="click: showMarker"><span data-bind="text: name"></span></div>
 			</div>
 		</section>
-		<section id="map" class="map">
-
-		</section>
+		<section id="map" class="map"></section>
 	</main>
 </body>
 </html>

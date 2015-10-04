@@ -66,6 +66,24 @@ function initMap() {
 	initializeApp();
 }
 
+var oauth = OAuth({
+    consumer: {
+        public: 'CONSUMERPUBLIC',
+        secret: 'CONSUMERSECRET'
+    },
+    signature_method: 'HMAC-SHA1'
+});
+
+var token = {
+    public: 'TOKENPUBLIC',
+    secret: 'TOKENSECRET'
+};
+
+function getInfoContent(place) {
+
+	return '<h1>hello whirld, at ' + place.name + '</h1>';
+}
+
 function initializeApp() {
 	function initializePlace(place) {
 		var marker = new google.maps.Marker({
@@ -74,7 +92,7 @@ function initializeApp() {
 			map: map
 		});
 
-		var infoWindowContent = '<h1>hello whirld, at ' + place.name + '</h1>';
+		var infoWindowContent = getInfoContent(place);
 		function showInfoWindow() {
 			closeInfo();
 			infoWindow = new google.maps.InfoWindow({

@@ -16,6 +16,6 @@
     "gulp-uglifycss": "^1.0.4"
   },
   "dependencies": {
-    "superagent": "^1.4.0"
+    "oauth-1.0a": "^1.0.0"
   }
 }
