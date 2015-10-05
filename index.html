@@ -6,25 +6,25 @@
 	<title>Sights of Chicago</title>
 	<script src='dist/scripts/knockout.js'></script>
 	<script src='dist/scripts/jquery.js'></script>
-	<script src='dist/scripts/crypto-js.js'></script>
-	<script src='dist/scripts/oauth-1.0a.js'></script>
 	<script src="dist/scripts/app.js"></script>
 	<script async defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBpiH-ikGBFvdbpGQ3BkErSYFI8Ve5OkMc&callback=initMap">
+      src="https://maps.googleapis.com/maps/api/js?key=APIKEY&callback=initMap">
     </script>
     
 	<link rel="stylesheet" href="dist/styles/style.css">
+	<link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
 </head>
-<body>
+<body class="app">
 	<header>
 		<section class="search-bar">
-			<input data-bind="value: searchTerm, valueUpdate: 'afterkeydown'" />
+			<input placeholder="Search..." data-bind="value: searchTerm, valueUpdate: 'afterkeydown'" />
+			<button data-bind="click: togglePlacesList, visible: showToggleButton">Toggle Place List</button>
 		</section>
 	</header>
 	<main id="main-content" class="main-content">
-		<section id="place-list" class="place-list">
-			<div class="place-item" data-bind="foreach: filteredPlaces">
-				<div data-bind="click: showMarker"><span data-bind="text: name"></span></div>
+		<section id="place-list" class="place-list" data-bind="visible: showPlaceList">
+			<div class="place-items" data-bind="foreach: filteredPlaces">
+				<div class="place-item" data-bind="click: showMarker, text: name"></div>
 			</div>
 		</section>
 		<section id="map" class="map"></section>

@@ -44,47 +44,61 @@ var initialPlaces = [
 	}
 ];
 
-var timeout = window.setTimeout(function(){
-	console.log('error things')
+// Show an error message if google maps doesn't respond for a bit
+var errorTimeout = window.setTimeout(function(){
+	var map = document.getElementById('map');
+	map.innerHTML = "<h1>Whoops! Looks like we can't reach Google Maps. Sorry about that!</h1>";
+	map.style['padding-left'] = '10px';
+	var list = document.getElementById('place-list');
+	list.style.display = 'none';
 }, 1500);
 
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
-		center: {lat: 41.866205, lng: -87.606826 },
-		zoom: 12
+		center: {lat: 41.878205, lng: -87.606826 },
+		zoom: 13
 	});
 
+	// close the info window any time the map is clicked
 	map.addListener('click', closeInfo);
 
-	window.clearTimeout(timeout);
+	// clear error timeout if google maps comes back okay
+	window.clearTimeout(errorTimeout);
 
 	initializeApp();
 }
 
 function getInfoContent(place) {
-	$.get("http://api.nytimes.com/svc/search/v2/articlesearch.json",
-		{ "api-key": "APIKEY", "q": place.name })
-		.done(function(data) {
-			// Build up a bit of html to show up inside the info window
-			place.infoWindowContent = '<h3>Latest Stories About ' + place.name + '</3><ul>';
-			var docs = data.response.docs;
-			// Limit articles to 4 to prevent crowding
-			for (var i = 0; i < docs.length && i < 4; i++) {
-				var doc = docs[i];
-				// The print headlin is usually more concise, use that if available
-				var title = doc.headline.print_headline || doc.headline.main;
-				place.infoWindowContent += '<li><a href="' + doc.web_url + '">' + title + '</a></p>';
-			}
-			place.infoWindowContent += '</ul>';
-		})
-		.fail(function(data) {
-			place.infoWindowContent = '<p>Oh no! Looks like we couldn\'t reach the New York Times to find news. Try <a href="http://www.nytimes.com/">their website.</a></p>';
-		});
+
+	$.get("http://api.nytimes.com/svc/search/v2/articlesearch.json", {
+		"api-key": "APIKEY"
+		, "q": place.name 
+	})
+	.done(function(data) {
+		// Build up a bit of html to show up inside the info window
+		place.infoWindowContent = '<h3>Latest Stories About ' + place.name + '</3>';
+		var docs = data.response.docs;
+		// Limit articles to 4 to prevent crowding
+		for (var i = 0; i < docs.length && i < 4; i++) {
+			var doc = docs[i];
+			// The print headline is usually more concise, use that if available
+			var title = doc.headline.print_headline || doc.headline.main;
+			// if we're in a small browser, show a snippet of the title
+			if (window.innerWidth < 450) {
+				title = title.substring(0, 26) + '...';
+			};
+			place.infoWindowContent += '<p><a href="' + doc.web_url + '">' + title + '</a></p>';
+		}
+	})
+	.fail(function(data) {
+		place.infoWindowContent = '<p>Oh no! Looks like we couldn\'t reach the New York Times to find news. Try <a href="http://www.nytimes.com/">their website.</a></p>';
+	});
 
 	return '<h1>hello whirld, at ' + place.name + '</h1>';
 }
 
 function initializeApp() {
+    // Add some map-related properties to the static data now that we know we have the maps API
 	function initializePlace(place) {
 		var marker = new google.maps.Marker({
 			position: place.position,			
@@ -120,11 +134,12 @@ function initializeApp() {
 
     function MapAppViewModel(initialPlaces) {
         var self = this;
-        // Add some map-related properties to the static data now that we know we have the maps API
+        
         self.places = ko.observableArray(getInitialPlaces(initialPlaces));
 
         self.searchTerm = ko.observable('');
 
+        // filteredPlaces drives the list and is all the places that match the search term, case-insensitive
 	    self.filteredPlaces = ko.computed(function() {
 	    	if (!self.searchTerm()) { 
 	    		return self.places();
@@ -149,8 +164,20 @@ function initializeApp() {
 	    	    	place.marker.setAnimation(google.maps.Animation.DROP);
 	    	    }
 	    	});
-	    })
+	    });
+
+	    // Show a toggle button when the device screen is small
+	    var smallDevice = window.innerWidth < 450;
+
+	    self.showToggleButton = smallDevice;
+	    self.showPlaceList = ko.observable(!smallDevice);
+
+	    self.togglePlacesList = function() {
+	    	self.showPlaceList(!self.showPlaceList());
+	    };
     };
 
+    // initialPlaces are static to the ViewModel, but could be generated on load from an API 
+    // and passed in here if desired
     ko.applyBindings(new MapAppViewModel(initialPlaces));
 }

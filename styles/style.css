@@ -1,3 +1,8 @@
+.app {
+	background-color: #447884;
+	font-family: 'Lato', sans-serif;
+}
+
 .main-content {
     display: flex;
     position: absolute;
@@ -8,13 +13,30 @@
 }
 
 .search-bar {
-	width: 100%;
+	width: 100%;	
 }
 
 .place-list {
 	flex-grow: 1;
 	border: 1px solid black;	
 	min-width: 150px;
+}
+
+@media screen and (max-width: 400px) {
+	.menu-button {
+		display: block;
+	}
+
+	.place-list {
+		min-width: 100px;
+	}
+}
+
+.place-item {
+	margin: 5px;
+	padding: 14px 10px;
+	background-color: #D1E1E5;
+	border-radius: 2px;
 }
 
 .map {

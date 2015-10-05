@@ -9,15 +9,13 @@ var paths = {
 		'scripts/*.js',
 		'bower_components/knockout/dist/knockout.js',
 		'bower_components/jquery/dist/jquery.js',
-		'node_modules/oauth-1.0a/oauth-1.0a.js',
-		'node_modules/oauth-1.0a/node_modules/crypto-js/crypto-js.js'
 	],
 	styles: 'styles/*.css'
 };
 
 gulp.task('scripts', ['clean:scripts'], function() {
 	gulp.src(paths.scripts)
-		// .pipe(uglify())
+		.pipe(uglify())
 		.pipe(gulp.dest(DEST + '/scripts'));
 });
 
