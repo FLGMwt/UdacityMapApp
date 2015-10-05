@@ -3,7 +3,7 @@ var infoWindow;
 function closeInfo() {
 	if (infoWindow) {
 		infoWindow.close();
-	};
+	}
 }
 var initialPlaces = [
 	{
@@ -46,9 +46,9 @@ var initialPlaces = [
 
 // Show an error message if google maps doesn't respond for a bit
 var errorTimeout = window.setTimeout(function(){
-	var map = document.getElementById('map');
-	map.innerHTML = "<h1>Whoops! Looks like we can't reach Google Maps. Sorry about that!</h1>";
-	map.style['padding-left'] = '10px';
+	var mapElement = document.getElementById('map');
+	mapElement.innerHTML = "<h1>Whoops! Looks like we can't reach Google Maps. Sorry about that!</h1>";
+	mapElement.style['padding-left'] = '10px';
 	var list = document.getElementById('place-list');
 	list.style.display = 'none';
 }, 1500);
@@ -71,8 +71,8 @@ function initMap() {
 function getInfoContent(place) {
 
 	$.get("http://api.nytimes.com/svc/search/v2/articlesearch.json", {
-		"api-key": "APIKEY"
-		, "q": place.name 
+		"api-key": "APIKEY",
+		q: place.name
 	})
 	.done(function(data) {
 		// Build up a bit of html to show up inside the info window
@@ -101,7 +101,7 @@ function initializeApp() {
     // Add some map-related properties to the static data now that we know we have the maps API
 	function initializePlace(place) {
 		var marker = new google.maps.Marker({
-			position: place.position,			
+			position: place.position,
     		animation: google.maps.Animation.DROP,
 			map: map
 		});
@@ -124,7 +124,7 @@ function initializeApp() {
 		marker.addListener('click', showInfoWindow);
 		place.showMarker = showInfoWindow;
 
-		place.marker = marker;		
+		place.marker = marker;
 	}
 
 	function getInitialPlaces(places) {
@@ -134,14 +134,14 @@ function initializeApp() {
 
     function MapAppViewModel(initialPlaces) {
         var self = this;
-        
+
         self.places = ko.observableArray(getInitialPlaces(initialPlaces));
 
         self.searchTerm = ko.observable('');
 
         // filteredPlaces drives the list and is all the places that match the search term, case-insensitive
 	    self.filteredPlaces = ko.computed(function() {
-	    	if (!self.searchTerm()) { 
+	    	if (!self.searchTerm()) {
 	    		return self.places();
 	    	}
 	    	var filter = self.searchTerm().toLowerCase();
@@ -158,7 +158,7 @@ function initializeApp() {
 	    	    });
 	    	    if (matchingFilteredPlace === null) {
 	    	    	closeInfo();
-	    	    	place.marker.setMap(null);	    	    	
+	    	    	place.marker.setMap(null);
 	    	    } else if (place.marker.map === null) {
 	    	    	place.marker.setMap(map);
 	    	    	place.marker.setAnimation(google.maps.Animation.DROP);
@@ -177,7 +177,7 @@ function initializeApp() {
 	    };
     };
 
-    // initialPlaces are static to the ViewModel, but could be generated on load from an API 
+    // initialPlaces are static to the ViewModel, but could be generated on load from an API
     // and passed in here if desired
     ko.applyBindings(new MapAppViewModel(initialPlaces));
 }
